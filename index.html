@@ -73,7 +73,7 @@ gen e_`x' = `x' / exp * 100
 
 /// Boucles commune
 
-foreach x of varlist(ins vot exp b t_lcom-t_lveg) {
+foreach x of varlist(ins vot exp bn t_lcom-t_lveg) {
 bysort insee : egen com_`x' = total(`x')
 }
 
