@@ -6,17 +6,30 @@
 	
 <style>	
 body {
-max-width: 200px;
+	width: 200px;
 }
 		
 p {
-font-family: sans-serif;
+	font-family: sans-serif;
 }	
 </style>
 	
 </head> 
 <body>
   
+  <p>French election results</p>
+	
+  <pre>
+  <code>
+import delimited Z:\home\me\RG15T1_ok.txt, delimiter(";") 
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+  </code>
+  </pre>
+	
   <p>ESS Frequent recode</p>
   
   <pre>
