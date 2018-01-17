@@ -71,6 +71,21 @@ foreach x of varlist(t_lcom-t_lveg) {
 gen e_`x' = `x' / exp * 100
 }
 
+/// Boucles commune
+
+foreach x of varlist(ins vot exp t_lcom-t_lveg) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_lcom-com_t_lveg) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_lcom-com_t_lveg) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+duplicates drop
   </code>
   </pre>
 	
