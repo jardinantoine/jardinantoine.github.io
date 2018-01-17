@@ -50,6 +50,14 @@ gen lug = voix if nuance =="LUG"
 gen lvec = voix if nuance =="LVEC"
 gen lveg = voix if nuance =="LVEG"
 
+foreach x of varlist(lcom-lveg) {
+bysort insee: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_lcom-t_lveg
+
+duplicates drop
+
   </code>
   </pre>
 	
