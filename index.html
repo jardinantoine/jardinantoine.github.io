@@ -27,6 +27,29 @@ egen insee = concat( coddep com)
 destring bv, gen(bv2) force
 egen idbv = concat( insee bv)
 drop if bv2 ==.
+
+// RG 2015
+
+gen lcom = voix if nuance =="LCOM"
+gen ldiv = voix if nuance =="LDIV"
+gen ldlf = voix if nuance =="LDLF"
+gen ldvd = voix if nuance =="LDVD"
+gen ldvg = voix if nuance =="LDVG"
+gen leco= voix if nuance =="LECO"
+gen lexd = voix if nuance =="LEXD"
+gen lexg = voix if nuance =="LEXG"
+gen lfg = voix if nuance =="LFG"
+gen lfn = voix if nuance =="LFN"
+gen llr = voix if nuance =="LLR"
+gen lmdm = voix if nuance =="LMDM"
+gen lrdg = voix if nuance =="LRDG"
+gen lreg = voix if nuance =="LREG"
+gen lsoc = voix if nuance =="LSOC"
+gen lud = voix if nuance =="LUDI"
+gen lug = voix if nuance =="LUG"
+gen lvec = voix if nuance =="LVEC"
+gen lveg = voix if nuance =="LVEG"
+
   </code>
   </pre>
 	
