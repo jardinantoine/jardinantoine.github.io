@@ -85,6 +85,8 @@ foreach x of varlist(com_t_lcom-com_t_lveg) {
 gen e_`x' = `x' / com_exp * 100
 }
 
+keep coddep codcom libcom insee com_ins com_vot com_exp com_t_lcom-e_com_t_lveg
+
 duplicates drop
   </code>
   </pre>
