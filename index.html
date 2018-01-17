@@ -60,6 +60,9 @@ duplicates drop
 
 /// Boucles bureau
 
+gen exp = vot - ( t_lcom + t_ldiv + t_ldlf + t_ldvd + t_ldvg + t_leco + t_lexd + t_lexg + t_lfg + t_lfn + t_llr + t_lmdm + t_lrdg + t_lreg + t_lsoc + t_lud + t_lug + t_lvec + t_lveg)
+
+
 foreach x of varlist(t_lcom-t_lveg) {
 gen i_`x' = `x' / ins * 100
 }
