@@ -1,1 +1,32 @@
-Hello World
+<!doctype html>
+<html>
+<head> 
+	<meta charset="utf-8">
+	<title>Data & Social Science</title>
+</head> 
+<body>
+ 
+  
+  <p>ESS Frequent recode</p>
+  
+  <code>
+    recode rlgdnm (1=1 "Catholic") (2=2 "Protestant") (3/4=3 "Other christian") (5=4 "Jewish") (6/8=5 "Islamic & other")  (66=6 "No religion") (77/99=.), gen(relig)
+    recode rlgdgr (0=0 "not religious") (1/4 = 1 "low religiosity") (5/7 = 2 "medium reliosity") (8/10 = 3 "high religiosity") (else=.), gen(religiosity)
+    recode lrscale (0/4 = 1 "left") (5=2 "nini") (6/10=3 "right") (else =4 "no place"), gen(placement)
+    recode agea (15/24 = 1 "15-24 ans") (25/34= 2 "25-34 ans") (35/44= 3 "35-44 ans") (45/54= 4 "45-54 ans") (55/64 = 5 "55/64 ans") (65/100 = 6 "65 ans et plus") (else = .),gen (agecod)
+    recode agea (18/24 = 1 "18-24 ans") (25/34= 2 "25-34 ans") (35/44= 3 "35-44 ans") (45/54= 4 "45-54 ans") (55/64 = 5 "55/64 ans") (65/100 = 6 "65 ans et plus") (else = .),gen (agecod)
+    recode eisced (1=1 "isced 1") (2=2 "isced 2") (3=3 "isced 3b") (4=4 "isced 3a") (5=5 "isced 4") (6=5 "isced 5a") (7=6 "isced 5b") (else=.), gen(educ)
+    recode gndr (1=1 "Male") (2=2 "Female") (9=.), gen(sex)
+    recode isco08 (0/999 = 0 "Armed forces") (1000/1999 = 1 "Managers") (2000/2999 = 2 "Professionals") (3000/3999 = 3 "Technicians") (4000/4999 = 4 "Clercks") (5000/5999 = 5 "Services") (6000/6999 = 6 "Skilled Agri") (7000/7999 = 7 "Craft & trade") (8000/8999 = 8 "Plant operators") (9000/9999 = 9 "Elementary occ") (else= 10 "inactive") , gen(class)
+
+    recode aesfdrk (1=1 "Very safe") (2=2 "Safe") (3=3 "Unsafe") (4=4 "Very unsafe") (7/9=.), gen(safety)
+    recode crmvct (1=1 "yes") (2=0 "no") (else=.), gen(victim)
+    
+    gen w  = dweight * pweight
+    gen w2 = w * 100000
+    gen w3 = round(w2)
+  </code>
+</body>
+</html>
+
+  
