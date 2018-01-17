@@ -60,8 +60,8 @@ duplicates drop
 
 /// Boucles bureau
 
-gen exp = vot - ( t_lcom + t_ldiv + t_ldlf + t_ldvd + t_ldvg + t_leco + t_lexd + t_lexg + t_lfg + t_lfn + t_llr + t_lmdm + t_lrdg + t_lreg + t_lsoc + t_lud + t_lug + t_lvec + t_lveg)
-
+gen bn = vot - ( t_lcom + t_ldiv + t_ldlf + t_ldvd + t_ldvg + t_leco + t_lexd + t_lexg + t_lfg + t_lfn + t_llr + t_lmdm + t_lrdg + t_lreg + t_lsoc + t_lud + t_lug + t_lvec + t_lveg)
+gen exp = vot - bn 
 
 foreach x of varlist(t_lcom-t_lveg) {
 gen i_`x' = `x' / ins * 100
@@ -73,7 +73,7 @@ gen e_`x' = `x' / exp * 100
 
 /// Boucles commune
 
-foreach x of varlist(ins vot exp t_lcom-t_lveg) {
+foreach x of varlist(ins vot exp b t_lcom-t_lveg) {
 bysort insee : egen com_`x' = total(`x')
 }
 
@@ -85,7 +85,7 @@ foreach x of varlist(com_t_lcom-com_t_lveg) {
 gen e_`x' = `x' / com_exp * 100
 }
 
-keep coddep codcom libcom insee com_ins com_vot com_exp com_t_lcom-e_com_t_lveg
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_lcom-e_com_t_lveg
 
 duplicates drop
   </code>
