@@ -5,10 +5,10 @@
 	<title>Data & Social Science</title>
 </head> 
 <body>
- 
   
   <p>ESS Frequent recode</p>
   
+  <pre>
   <code>
     recode rlgdnm (1=1 "Catholic") (2=2 "Protestant") (3/4=3 "Other christian") (5=4 "Jewish") (6/8=5 "Islamic & other")  (66=6 "No religion") (77/99=.), gen(relig)
     recode rlgdgr (0=0 "not religious") (1/4 = 1 "low religiosity") (5/7 = 2 "medium reliosity") (8/10 = 3 "high religiosity") (else=.), gen(religiosity)
@@ -26,6 +26,8 @@
     gen w2 = w * 100000
     gen w3 = round(w2)
   </code>
+  </pre>
+
 </body>
 </html>
 
