@@ -58,6 +58,16 @@ keep coddep codcom libcom bv bv2 ins vot com insee idbv t_lcom-t_lveg
 
 duplicates drop
 
+/// Boucles bureau
+
+foreach x of varlist(t_lcom-t_lveg) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_lcom-t_lveg) {
+gen e_`x' = `x' / exp * 100
+}
+
   </code>
   </pre>
 	
