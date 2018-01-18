@@ -4,6 +4,10 @@ body {
     width: 800px;
 }
 
+pre {
+    white-space: pre-wrap;
+}
+
 code {
     background-color: #002b36;
     color: #93a1a1;
