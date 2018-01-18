@@ -3,3 +3,8 @@ body {
     margin-right:auto;
     width: 800px;
 }
+
+code {
+    background-color: #002b36;
+    color: #93a1a1;
+}
