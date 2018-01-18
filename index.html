@@ -10,73 +10,2280 @@
 	
   <pre>
   <code>
-import delimited Z:\home\me\RG15T1_ok.txt, delimiter(";") 
+  
+  *** Syntaxe pour les données électorales officielles ***
+
+
+/// DEP 2015
+
+// tour 2
+
+import delimited Z:\home\me\DP15T1T2_ok.txt, delimiter(";") 
+
 gen str3 com = string(codcom,"%03.0f")
 egen insee = concat( coddep com)
 destring bv, gen(bv2) force
 egen idbv = concat( insee bv)
 drop if bv2 ==.
 
-// RG 2015
+keep if ntour == 2
 
-gen lcom = voix if nuance =="LCOM"
-gen ldiv = voix if nuance =="LDIV"
-gen ldlf = voix if nuance =="LDLF"
-gen ldvd = voix if nuance =="LDVD"
-gen ldvg = voix if nuance =="LDVG"
-gen leco= voix if nuance =="LECO"
-gen lexd = voix if nuance =="LEXD"
-gen lexg = voix if nuance =="LEXG"
-gen lfg = voix if nuance =="LFG"
-gen lfn = voix if nuance =="LFN"
-gen llr = voix if nuance =="LLR"
-gen lmdm = voix if nuance =="LMDM"
-gen lrdg = voix if nuance =="LRDG"
-gen lreg = voix if nuance =="LREG"
-gen lsoc = voix if nuance =="LSOC"
-gen lud = voix if nuance =="LUDI"
-gen lug = voix if nuance =="LUG"
-gen lvec = voix if nuance =="LVEC"
-gen lveg = voix if nuance =="LVEG"
 
-foreach x of varlist(lcom-lveg) {
+gen BC_COM= voix if nuance == "BC-COM"
+gen BC_DIV= voix if nuance == "BC-DIV"
+gen BC_DLF= voix if nuance == "BC-DLF"
+gen BC_DVD= voix if nuance == "BC-DVD"
+gen BC_DVG= voix if nuance == "BC-DVG"
+gen BC_EXD= voix if nuance == "BC-EXD"
+gen BC_FG= voix if nuance == "BC-FG"
+gen BC_FN= voix if nuance == "BC-FN"
+gen BC_MDM= voix if nuance == "BC-MDM"
+gen BC_PG= voix if nuance == "BC-PG"
+gen BC_RDG= voix if nuance == "BC-RDG"
+gen BC_SOC= voix if nuance == "BC-SOC"
+gen BC_UC= voix if nuance == "BC-UC"
+gen BC_UD= voix if nuance == "BC-UD"
+gen BC_UDI= voix if nuance == "BC-UDI"
+gen BC_UG= voix if nuance == "BC-UG"
+gen BC_UMP= voix if nuance == "BC-UMP"
+gen BC_VEC= voix if nuance == "BC-VEC"
+
+
+
+foreach x of varlist(BC_COM-BC_VEC) {
 bysort idbv: egen t_`x' = total(`x')
 }
 
-keep coddep codcom libcom bv bv2 ins vot com insee idbv t_lcom-t_lveg
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_BC_COM-t_BC_VEC
 
 duplicates drop
 
 /// Boucles bureau
 
-gen bn = vot - ( t_lcom + t_ldiv + t_ldlf + t_ldvd + t_ldvg + t_leco + t_lexd + t_lexg + t_lfg + t_lfn + t_llr + t_lmdm + t_lrdg + t_lreg + t_lsoc + t_lud + t_lug + t_lvec + t_lveg)
+gen bn = vot - ( t_BC_COM + t_BC_DIV + t_BC_DLF + t_BC_DVD + t_BC_DVG + t_BC_EXD + t_BC_FG + t_BC_FN + t_BC_MDM + t_BC_PG + t_BC_RDG + t_BC_SOC + t_BC_UC + t_BC_UD + t_BC_UDI + t_BC_UG + t_BC_UMP + t_BC_VEC)
 gen exp = vot - bn 
 
-foreach x of varlist(t_lcom-t_lveg) {
+
+foreach x of varlist(t_BC_COM-t_BC_VEC) {
 gen i_`x' = `x' / ins * 100
 }
 
-foreach x of varlist(t_lcom-t_lveg) {
+foreach x of varlist(t_BC_COM-t_BC_VEC) {
 gen e_`x' = `x' / exp * 100
 }
 
 /// Boucles commune
 
-foreach x of varlist(ins vot exp bn t_lcom-t_lveg) {
+foreach x of varlist(ins vot exp bn t_BC_COM-t_BC_VEC) {
 bysort insee : egen com_`x' = total(`x')
 }
 
-foreach x of varlist(com_t_lcom-com_t_lveg) {
+foreach x of varlist(com_t_BC_COM-com_t_BC_VEC) {
 gen i_`x' = `x' / com_ins * 100
 }
 
-foreach x of varlist(com_t_lcom-com_t_lveg) {
+foreach x of varlist(com_t_BC_COM-com_t_BC_VEC) {
 gen e_`x' = `x' / com_exp * 100
 }
 
-keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_lcom-e_com_t_lveg
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_BC_COM-e_com_t_BC_VEC
 
 duplicates drop
+
+
+
+// tour 1
+
+import delimited Z:\home\me\DP15T1T2_ok.txt, delimiter(";") 
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+keep if ntour == 1
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen BC_COM= voix if nuance == "BC-COM"
+gen BC_DIV= voix if nuance == "BC-DIV"
+gen BC_DLF= voix if nuance == "BC-DLF"
+gen BC_DVD= voix if nuance == "BC-DVD"
+gen BC_DVG= voix if nuance == "BC-DVG"
+gen BC_EXD= voix if nuance == "BC-EXD"
+gen BC_EXG= voix if nuance == "BC-EXG"
+gen BC_FG= voix if nuance == "BC-FG"
+gen BC_FN= voix if nuance == "BC-FN"
+gen BC_MDM= voix if nuance == "BC-MDM"
+gen BC_PG= voix if nuance == "BC-PG"
+gen BC_RDG= voix if nuance == "BC-RDG"
+gen BC_SOC= voix if nuance == "BC-SOC"
+gen BC_UC= voix if nuance == "BC-UC"
+gen BC_UD= voix if nuance == "BC-UD"
+gen BC_UDI= voix if nuance == "BC-UDI"
+gen BC_UG= voix if nuance == "BC-UG"
+gen BC_UMP= voix if nuance == "BC-UMP"
+gen BC_VEC= voix if nuance == "BC-VEC"
+
+
+foreach x of varlist(BC_COM-BC_VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_BC_COM-t_BC_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - ( t_BC_COM + t_BC_DIV + t_BC_DLF + t_BC_DVD + t_BC_DVG + t_BC_EXD + t_BC_EXG + t_BC_FG + t_BC_FN + t_BC_MDM + t_BC_PG + t_BC_RDG + t_BC_SOC + t_BC_UC + t_BC_UD + t_BC_UDI + t_BC_UG + t_BC_UMP + t_BC_VEC)
+gen exp = vot - bn 
+
+
+foreach x of varlist(t_BC_COM-t_BC_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_BC_COM-t_BC_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_BC_COM-t_BC_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_BC_COM-com_t_BC_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_BC_COM-com_t_BC_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_BC_COM-e_com_t_BC_VEC
+
+duplicates drop
+
+
+
+
+/// RG 2015
+
+// tour 2
+
+import delimited Z:\home\me\RG15T2_ok.txt, delimiter(";")
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LDVG= voix if nuance == "LDVG"
+gen LFN= voix if nuance == "LFN"
+gen LREG= voix if nuance == "LREG"
+gen LSOC= voix if nuance == "LSOC"
+gen LUD= voix if nuance == "LUD"
+gen LUG= voix if nuance == "LUG"
+
+foreach x of varlist(LDVG-LUG) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LDVG-t_LUG
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - ( t_LDVG +  t_LFN +  t_LREG + t_LSOC + t_LUD + t_LUG)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LDVG-t_LUG) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LDVG-t_LUG) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LDVG-t_LUG) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LDVG-com_t_LUG) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LDVG-com_t_LUG) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LDVG-e_com_t_LUG
+
+duplicates drop
+
+
+// tour 1
+
+import delimited Z:\home\me\RG15T1_ok.txt, delimiter(";") 
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LCOM= voix if nuance =="LCOM"
+gen LDIV= voix if nuance =="LDIV"
+gen LDLF= voix if nuance =="LDLF"
+gen LDVD= voix if nuance =="LDVD"
+gen LDVG= voix if nuance =="LDVG"
+gen LECO= voix if nuance =="LECO"
+gen LEXD= voix if nuance =="LEXD"
+gen LEXG= voix if nuance =="LEXG"
+gen LFG= voix if nuance =="LFG"
+gen LFN= voix if nuance =="LFN"
+gen LLR= voix if nuance =="LLR"
+gen LMDM= voix if nuance =="LMDM"
+gen LRDG= voix if nuance =="LRDG"
+gen LREG= voix if nuance =="LREG"
+gen LSOC= voix if nuance =="LSOC"
+gen LUD= voix if nuance =="LUD"
+gen LUDI= voix if nuance =="LUDI"
+gen LUG= voix if nuance =="LUG"
+gen LVEC= voix if nuance =="LVEC"
+gen LVEG= voix if nuance =="LVEG"
+
+
+foreach x of varlist(LCOM-LVEG) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LCOM-t_LVEG
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - ( t_LCOM + t_LDIV + t_LDLF + t_LDVD + t_LDVG + t_LECO + t_LEXD + t_LEXG + t_LFG + t_LFN + t_LLR + t_LMDM + t_LRDG + t_LREG + t_LSOC + t_LUD + t_LUG + t_LVEC + t_LVEG)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LCOM-t_LVEG) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LCOM-t_LVEG) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LCOM-t_LVEG) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LCOM-com_t_LVEG) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LCOM-com_t_LVEG) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LCOM-e_com_t_LVEG
+
+duplicates drop
+
+***************************************************
+
+/// ER 2014 
+
+import delimited Z:\home\me\ER14_ok.txt, delimiter(";") 
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LDIV= voix if nuance == "LDIV"
+gen LDVD= voix if nuance == "LDVD"
+gen LDVG= voix if nuance == "LDVG"
+gen LEXD= voix if nuance == "LEXD"
+gen LEXG= voix if nuance == "LEXG"
+gen LFG= voix if nuance == "LFG"
+gen LFN= voix if nuance == "LFN"
+gen LUC= voix if nuance == "LUC"
+gen LUG= voix if nuance == "LUG"
+gen LUMP= voix if nuance == "LUMP"
+gen LVEC= voix if nuance == "LVEC"
+
+
+foreach x of varlist(LDIV-LVEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LDIV-t_LVEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_LDIV + t_LDVD + t_LDVG + t_LEXD + t_LEXG + t_LFG + t_LFN + t_LUC + t_LUG + t_LUMP + t_LVEC)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LDIV-t_LVEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LDIV-t_LVEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LDIV-t_LVEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LDIV-com_t_LVEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LDIV-com_t_LVEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LDIV-e_com_t_LVEC
+
+duplicates drop
+
+
+
+***************************************************
+
+/// ER 2009 
+
+import delimited Z:\home\me\ER09_ok.txt, delimiter(";") 
+
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LAUT= voix if nuance == "LAUT"
+gen LCMD= voix if nuance == "LCMD"
+gen LCOP= voix if nuance == "LCOP"
+gen LDD= voix if nuance == "LDD"
+gen LDV= voix if nuance == "LDV"
+gen LDVD= voix if nuance == "LDVD"
+gen LDVG= voix if nuance == "LDVG"
+gen LEXD= voix if nuance == "LEXD"
+gen LEXG= voix if nuance == "LEXG"
+gen LFN= voix if nuance == "LFN"
+gen LMAJ= voix if nuance == "LMAJ"
+gen LPC= voix if nuance == "LPC"
+gen LREG= voix if nuance == "LREG"
+gen LSOC= voix if nuance == "LSOC"
+gen LVEC= voix if nuance == "LVEC"
+
+foreach x of varlist(LAUT-LVEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LAUT-t_LVEC
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_LAUT + t_LCMD + t_LCOP + t_LDD + t_LDV + t_LDVD + t_LDVG + t_LEXD + t_LEXG + t_LFN + t_LMAJ+ t_LPC + t_LREG + t_LSOC + t_LVEC)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LAUT-t_LVEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LAUT-t_LVEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LAUT-t_LVEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LAUT-com_t_LVEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LAUT-com_t_LVEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LAUT-e_com_t_LVEC
+
+duplicates drop
+
+
+
+***************************************************
+
+/// ER 2004
+
+
+import delimited Z:\home\me\ER04_ok.txt, delimiter(";") 
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LCP= voix if nuance == "LCP"
+gen LDD= voix if nuance == "LDD"
+gen LDG= voix if nuance == "LDG"
+gen LDV= voix if nuance == "LDV"
+gen LEC= voix if nuance == "LEC"
+gen LFN= voix if nuance == "LFN"
+gen LPC= voix if nuance == "LPC"
+gen LPS= voix if nuance == "LPS"
+gen LRG= voix if nuance == "LRG"
+gen LUDF= voix if nuance == "LUDF"
+gen LUMP= voix if nuance == "LUMP"
+gen LVE= voix if nuance == "LVE"
+gen LXD= voix if nuance == "LXD"
+gen LXG= voix if nuance == "LXG"
+
+
+foreach x of varlist(LCP-LXG) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LCP-t_LXG
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_LCP + t_LDD + t_LDG + t_LDV + t_LEC + t_LFN + t_LPC+ t_LPS + t_LRG + t_LUDF + t_LUMP + t_LVE + t_LXD + t_LXG)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LCP-t_LXG) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LCP-t_LXG) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LCP-t_LXG) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LCP-com_t_LXG) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LCP-com_t_LXG) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LCP-e_com_t_LXG
+
+duplicates drop
+
+
+
+
+***************************************************
+
+/// ER 1999
+
+import delimited Z:\home\me\ER99_ok.txt, delimiter(";") 
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen COM= voix if nuance == "COM"
+gen CPNT= voix if nuance == "CPNT"
+gen DIV= voix if nuance == "DIV"
+gen DTE= voix if nuance == "DTE"
+gen DVD= voix if nuance == "DVD"
+gen ECO= voix if nuance == "ECO"
+gen EXG= voix if nuance == "EXG"
+gen FRN= voix if nuance == "FRN"
+gen GAU= voix if nuance == "GAU"
+gen MNA= voix if nuance == "MNA"
+gen REG= voix if nuance == "REG"
+gen UDF= voix if nuance == "UDF"
+gen VEC= voix if nuance == "VEC"
+
+
+
+foreach x of varlist(COM-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_COM-t_VEC
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_COM + t_CPNT + t_DIV + t_DTE + t_DVD + t_ECO + t_EXG + t_FRN + t_GAU + t_MNA + t_REG + t_UDF + t_VEC)
+gen exp = vot - bn 
+
+foreach x of varlist(t_COM-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_COM-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_COM-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_COM-e_com_t_VEC
+
+duplicates drop
+
+
+***************************************************
+
+/// RG 2010
+
+
+// tour 2
+
+import delimited Z:\home\me\RG10T1T2_ok.txt, delimiter(";") 
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LCMD= voix if nuance == "LCMD"
+gen LCOP= voix if nuance == "LCOP"
+gen LDVG= voix if nuance == "LDVG"
+gen LFN= voix if nuance == "LFN"
+gen LMAJ= voix if nuance == "LMAJ"
+gen LREG= voix if nuance == "LREG"
+gen LSOC= voix if nuance == "LSOC"
+gen LUG= voix if nuance == "LUG"
+gen LVEC= voix if nuance == "LVEC"
+
+
+
+foreach x of varlist(LCMD-LVEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LCMD-t_LVEC
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - ( t_LCMD + t_LCOP + t_LDVG + t_LFN + t_LMAJ + t_LREG + t_LSOC + t_LUG + t_LVEC)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LCMD-t_LVEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LCMD-t_LVEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LCMD-t_LVEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LCMD-com_t_LVEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LCMD-com_t_LVEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LCMD-e_com_t_LVEC
+
+duplicates drop
+
+
+
+// tour 1
+
+import delimited Z:\home\me\RG10T1T2_ok.txt, delimiter(";") 
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+
+gen LAUT= voix if nuance == "LAUT"
+gen LCMD= voix if nuance == "LCMD"
+gen LCOP= voix if nuance == "LCOP"
+gen LDVD= voix if nuance == "LDVD"
+gen LDVG= voix if nuance == "LDVG"
+gen LEXD= voix if nuance == "LEXD"
+gen LEXG= voix if nuance == "LEXG"
+gen LFN= voix if nuance == "LFN"
+gen LMAJ= voix if nuance == "LMAJ"
+gen LREG= voix if nuance == "LREG"
+gen LSOC= voix if nuance == "LSOC"
+gen LUG= voix if nuance == "LUG"
+gen LVEC= voix if nuance == "LVEC"
+
+
+
+foreach x of varlist(LAUT-LVEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LAUT-t_LVEC
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_LAUT + t_LCMD + t_LCOP + t_LDVD + t_LDVG + t_LEXD + t_LEXG + t_LFN + t_LMAJ + t_LREG + t_LSOC + t_LUG + t_LVEC)
+gen exp = vot - bn 
+
+foreach x of varlist(t_LAUT-t_LVEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LAUT-t_LVEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LAUT-t_LVEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LAUT-com_t_LVEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LAUT-com_t_LVEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LAUT-e_com_t_LVEC
+
+duplicates drop
+
+
+***************************************************
+
+/// RG 2004
+
+
+// tour 2
+
+import delimited Z:\home\me\RG04T1T2_ok.txt, delimiter(";") 
+
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LDD= voix if nuance == "LDD"
+gen LDG= voix if nuance == "LDG"
+gen LDR= voix if nuance == "LDR"
+gen LFN= voix if nuance == "LFN"
+gen LGA= voix if nuance == "LGA"
+gen LRG= voix if nuance == "LRG"
+
+
+
+foreach x of varlist(LDD-LRG) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LDD-t_LRG
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_LDD + t_LDG + t_LDR + t_LFN + t_LGA + t_LRG )
+gen exp = vot - bn 
+
+foreach x of varlist(t_LDD-t_LRG) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LDD-t_LRG) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LDD-t_LRG) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LDD-com_t_LRG) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LDD-com_t_LRG) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LDD-e_com_t_LRG
+
+duplicates drop
+
+
+// tour 1
+
+
+import delimited Z:\home\me\RG04T1T2_ok.txt, delimiter(";") 
+
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen LCP= voix if nuance == "LCP"
+gen LDD= voix if nuance == "LDD"
+gen LDG= voix if nuance == "LDG"
+gen LDR= voix if nuance == "LDR"
+gen LDV= voix if nuance == "LDV"
+gen LEC= voix if nuance == "LEC"
+gen LFN= voix if nuance == "LFN"
+gen LGA= voix if nuance == "LGA"
+gen LRG= voix if nuance == "LRG"
+gen LVE= voix if nuance == "LVE"
+gen LXD= voix if nuance == "LXD"
+gen LXG= voix if nuance == "LXG"
+
+
+foreach x of varlist(LCP-LXG) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_LCP-t_LXG
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_LCP + t_LDD + t_LDG + t_LDR + t_LDV + t_LEC + t_LFN + t_LGA + t_LRG + t_LVE + t_LXD + t_LXG )
+gen exp = vot - bn 
+
+foreach x of varlist(t_LCP-t_LXG) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_LCP-t_LXG) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_LCP-t_LXG) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_LCP-com_t_LXG) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_LCP-com_t_LXG) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_LCP-e_com_t_LXG
+
+duplicates drop
+
+
+***************************************************
+
+/// PR2012
+
+
+// tour 2
+
+import delimited Z:\home\me\PR12T1T2_ok.txt, delimiter(";") 
+
+
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+
+gen HOLL= voix if nuance == "HOLL"
+gen SARK= voix if nuance == "SARK"
+
+
+foreach x of varlist(HOLL-SARK) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_HOLL-t_SARK
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_HOLL + t_SARK )
+gen exp = vot - bn 
+
+foreach x of varlist(t_HOLL-t_SARK) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_HOLL-t_SARK) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_HOLL-t_SARK) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_HOLL-com_t_SARK) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_HOLL-com_t_SARK) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_HOLL-e_com_t_SARK
+
+duplicates drop
+
+
+
+// tour 1
+
+import delimited Z:\home\me\PR12T1T2_ok.txt, delimiter(";") 
+
+
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen ARTH= voix if nuance == "ARTH"
+gen BAYR= voix if nuance == "BAYR"
+gen CHEM= voix if nuance == "CHEM"
+gen DUPO= voix if nuance == "DUPO"
+gen HOLL= voix if nuance == "HOLL"
+gen JOLY= voix if nuance == "JOLY"
+gen LEPE= voix if nuance == "LEPE"
+gen MELE= voix if nuance == "MELE"
+gen POUT= voix if nuance == "POUT"
+gen SARK= voix if nuance == "SARK"
+
+
+foreach x of varlist(ARTH-SARK) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_ARTH-t_SARK
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_ARTH + t_BAYR + t_CHEM + t_DUPO + t_HOLL + t_JOLY + t_LEPE + t_MELE + t_POUT + t_SARK )
+gen exp = vot - bn 
+
+foreach x of varlist(t_ARTH-t_SARK) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_ARTH-t_SARK) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_ARTH-t_SARK) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_ARTH-com_t_SARK) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_ARTH-com_t_SARK) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_ARTH-e_com_t_SARK
+
+duplicates drop
+
+
+
+***************************************************
+
+/// PR2007
+
+
+// tour 2
+
+import delimited Z:\home\me\PR07T1T2_ok.txt, delimiter(";") 
+
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen ROYA= voix if nuance == "ROYA"
+gen SARK= voix if nuance == "SARK"
+
+
+foreach x of varlist(ROYA-SARK) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_ROYA-t_SARK
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_ROYA + t_SARK )
+gen exp = vot - bn 
+
+foreach x of varlist(t_ROYA-t_SARK) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_ROYA-t_SARK) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_ROYA-t_SARK) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_ROYA-com_t_SARK) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_ROYA-com_t_SARK) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_ROYA-e_com_t_SARK
+
+duplicates drop
+
+
+
+// tour 1
+
+import delimited Z:\home\me\PR07T1T2_ok.txt, delimiter(";") 
+
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen BAYR= voix if nuance == "BAYR"
+gen BESA= voix if nuance == "BESA"
+gen BOVE= voix if nuance == "BOVE"
+gen BUFF= voix if nuance == "BUFF"
+gen LAGU= voix if nuance == "LAGU"
+gen LEPE= voix if nuance == "LEPE"
+gen NIHO= voix if nuance == "NIHO"
+gen ROYA= voix if nuance == "ROYA"
+gen SARK= voix if nuance == "SARK"
+gen SCHI= voix if nuance == "SCHI"
+gen VILL= voix if nuance == "VILL"
+gen VOYN= voix if nuance == "VOYN"
+
+
+foreach x of varlist(BAYR-VOYN) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_BAYR-t_VOYN
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_BAYR + t_BESA + t_BOVE + t_BUFF + t_LAGU  + t_LEPE + t_NIHO + t_ROYA + t_SARK + t_SCHI + t_VILL + t_VOYN )
+gen exp = vot - bn 
+
+foreach x of varlist(t_BAYR-t_VOYN) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_BAYR-t_VOYN) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_BAYR-t_VOYN) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_BAYR-com_t_VOYN) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_BAYR-com_t_VOYN) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_BAYR-e_com_t_VOYN
+
+duplicates drop
+
+
+
+***************************************************
+
+/// PR2002
+
+
+// tour 2
+
+import delimited Z:\home\me\PR02T1T2_ok.txt, delimiter(";")
+
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen CHIR= voix if nuance == "CHIR"
+gen LEPE= voix if nuance == "LEPE"
+
+
+foreach x of varlist(CHIR-LEPE) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_CHIR-t_LEPE
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_CHIR + t_LEPE )
+gen exp = vot - bn 
+
+foreach x of varlist(t_CHIR-t_LEPE) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_CHIR-t_LEPE) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_CHIR-t_LEPE) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_CHIR-com_t_LEPE) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_CHIR-com_t_LEPE) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_CHIR-e_com_t_LEPE
+
+duplicates drop
+
+
+
+// tour 1
+
+import delimited Z:\home\me\PR02T1T2_ok.txt, delimiter(";")
+
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen BAYR= voix if nuance == "BAYR"
+gen BESA= voix if nuance == "BESA"
+gen BOUT= voix if nuance == "BOUT"
+gen CHEV= voix if nuance == "CHEV"
+gen CHIR= voix if nuance == "CHIR"
+gen GLUC= voix if nuance == "GLUC"
+gen HUE= voix if nuance == "HUE"
+gen JOSP= voix if nuance == "JOSP"
+gen LAGU= voix if nuance == "LAGU"
+gen LEPA= voix if nuance == "LEPA"
+gen LEPE= voix if nuance == "LEPE"
+gen MADE= voix if nuance == "MADE"
+gen MAME= voix if nuance == "MAME"
+gen MEGR= voix if nuance == "MEGR"
+gen SAIN= voix if nuance == "SAIN"
+gen TAUB= voix if nuance == "TAUB"
+
+
+foreach x of varlist(BAYR-TAUB) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_BAYR-t_TAUB
+
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_BAYR + t_BESA + t_BOUT + t_CHEV  + t_CHIR + t_GLUC + t_HUE + t_JOSP + t_LAGU  + t_LEPA + t_LEPE + t_MADE + t_MAME + t_MEGR + t_SAIN + t_TAUB )
+gen exp = vot - bn 
+
+foreach x of varlist(t_BAYR-t_TAUB) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_BAYR-t_TAUB) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_BAYR-t_TAUB) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_BAYR-com_t_TAUB) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_BAYR-com_t_TAUB) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_BAYR-e_com_t_TAUB
+
+duplicates drop
+
+
+*****************************************
+
+/// LG 2012
+
+// tour 2
+
+import delimited Z:\home\me\LG12T1T2_ok.txt, delimiter(";") 
+
+
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen ALLI= voix if nuance == "ALLI"
+gen CEN= voix if nuance == "CEN"
+gen DVD= voix if nuance == "DVD"
+gen DVG= voix if nuance == "DVG"
+gen EXD= voix if nuance == "EXD"
+gen FG= voix if nuance == "FG"
+gen FN= voix if nuance == "FN"
+gen NCE= voix if nuance == "NCE"
+gen PRV= voix if nuance == "PRV"
+gen RDG= voix if nuance == "RDG"
+gen REG= voix if nuance == "REG"
+gen SOC= voix if nuance == "SOC"
+gen UMP= voix if nuance == "UMP"
+gen VEC= voix if nuance == "VEC"
+
+
+foreach x of varlist(ALLI-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_ALLI-t_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_ALLI + t_CEN + t_DVD + t_DVG + t_EXD + t_FG + t_FN + t_NCE + t_PRV + t_RDG + t_REG + t_SOC + t_UMP + t_VEC )
+gen exp = vot - bn 
+
+foreach x of varlist(t_ALLI-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_ALLI-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_ALLI-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_ALLI-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_ALLI-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_ALLI-e_com_t_VEC
+
+duplicates drop
+
+
+// tour 1
+
+import delimited Z:\home\me\LG12T1T2_ok.txt, delimiter(";") 
+ 
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+gen ALLI= voix if nuance == "ALLI"
+gen AUT= voix if nuance == "AUT"
+gen CEN= voix if nuance == "CEN"
+gen DVD= voix if nuance == "DVD"
+gen DVG= voix if nuance == "DVG"
+gen ECO= voix if nuance == "ECO"
+gen EXD= voix if nuance == "EXD"
+gen EXG= voix if nuance == "EXG"
+gen FG= voix if nuance == "FG"
+gen FN= voix if nuance == "FN"
+gen NCE= voix if nuance == "NCE"
+gen PRV= voix if nuance == "PRV"
+gen RDG= voix if nuance == "RDG"
+gen REG= voix if nuance == "REG"
+gen SOC= voix if nuance == "SOC"
+gen UMP= voix if nuance == "UMP"
+gen VEC= voix if nuance == "VEC"
+
+
+
+foreach x of varlist(ALLI-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_ALLI-t_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_ALLI + t_AUT + t_CEN + t_DVD + t_DVG + t_ECO + t_EXD + t_EXG + t_FG + t_FN + t_NCE + t_PRV + t_RDG + t_REG + t_SOC + t_UMP + t_VEC )
+gen exp = vot - bn 
+
+foreach x of varlist(t_ALLI-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_ALLI-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_ALLI-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_ALLI-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_ALLI-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_ALLI-e_com_t_VEC
+
+duplicates drop
+
+
+
+/// LG 07 
+
+// tour 2
+
+
+import delimited Z:\home\me\LG07T1T2_ok.txt, delimiter(";") 
+ 
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen COM= voix if nuance == "COM"
+gen DIV= voix if nuance == "DIV"
+gen DVD= voix if nuance == "DVD"
+gen DVG= voix if nuance == "DVG"
+gen FN= voix if nuance == "FN"
+gen MAJ= voix if nuance == "MAJ"
+gen RDG= voix if nuance == "RDG"
+gen REG= voix if nuance == "REG"
+gen SOC= voix if nuance == "SOC"
+gen UDFD= voix if nuance == "UDFD"
+gen UMP= voix if nuance == "UMP"
+gen VEC= voix if nuance == "VEC"
+
+
+foreach x of varlist(COM-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_COM-t_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_COM + t_DIV + t_DVD + t_DVG +  t_FN + t_MAJ + t_RDG + t_REG + t_SOC + t_UDFD + t_UMP + t_VEC )
+gen exp = vot - bn 
+
+foreach x of varlist(t_COM-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_COM-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_COM-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_COM-e_com_t_VEC
+
+duplicates drop
+
+
+// tour 1
+
+
+import delimited Z:\home\me\LG07T1T2_ok.txt, delimiter(";") 
+ 
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+gen COM= voix if nuance == "COM"
+gen CPNT= voix if nuance == "CPNT"
+gen DIV= voix if nuance == "DIV"
+gen DVD= voix if nuance == "DVD"
+gen DVG= voix if nuance == "DVG"
+gen ECO= voix if nuance == "ECO"
+gen EXD= voix if nuance == "EXD"
+gen EXG= voix if nuance == "EXG"
+gen FN= voix if nuance == "FN"
+gen MAJ= voix if nuance == "MAJ"
+gen MPF= voix if nuance == "MPF"
+gen RDG= voix if nuance == "RDG"
+gen REG= voix if nuance == "REG"
+gen SOC= voix if nuance == "SOC"
+gen UDFD= voix if nuance == "UDFD"
+gen UMP= voix if nuance == "UMP"
+gen VEC= voix if nuance == "VEC"
+
+
+foreach x of varlist(COM-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_COM-t_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_COM + t_CPNT + t_DIV + t_DVD + t_DVG + t_ECO + t_EXD + t_EXG  + t_FN + t_MAJ + t_MPF + t_RDG + t_REG + t_SOC + t_UDFD + t_UMP + t_VEC )
+gen exp = vot - bn 
+
+foreach x of varlist(t_COM-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_COM-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_COM-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_COM-e_com_t_VEC
+
+duplicates drop
+
+
+
+/// LG 02
+
+// tour 2
+
+import delimited Z:\home\me\LG02T1T2_ok.txt, delimiter(";") 
+
+keep if ntour==2
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen COM= voix if nuance == "COM"
+gen DIV= voix if nuance == "DIV"
+gen DVD= voix if nuance == "DVD"
+gen DVG= voix if nuance == "DVG"
+gen FN= voix if nuance == "FN"
+gen PREP= voix if nuance == "PREP"
+gen PRG= voix if nuance == "PRG"
+gen REG= voix if nuance == "REG"
+gen RPF= voix if nuance == "RPF"
+gen SOC= voix if nuance == "SOC"
+gen UDF= voix if nuance == "UDF"
+gen UMP= voix if nuance == "UMP"
+gen VEC= voix if nuance == "VEC"
+
+
+foreach x of varlist(COM-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_COM-t_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_COM +  t_DIV + t_DVD + t_DVG + t_FN + t_PREP + t_PRG + t_REG + t_RPF + t_SOC + t_UDF + t_UMP + t_VEC )
+gen exp = vot - bn 
+
+foreach x of varlist(t_COM-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_COM-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_COM-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_COM-e_com_t_VEC
+
+duplicates drop
+
+
+
+// tour 1
+
+import delimited Z:\home\me\LG02T1T2_ok.txt, delimiter(";") 
+
+keep if ntour==1
+
+gen str3 com = string(codcom,"%03.0f")
+egen insee = concat( coddep com)
+destring bv, gen(bv2) force
+egen idbv = concat( insee bv)
+drop if bv2 ==.
+
+
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+
+
+gen COM= voix if nuance == "COM"
+gen CPNT= voix if nuance == "CPNT"
+gen DIV= voix if nuance == "DIV"
+gen DL= voix if nuance == "DL"
+gen DVD= voix if nuance == "DVD"
+gen DVG= voix if nuance == "DVG"
+gen ECO= voix if nuance == "ECO"
+gen EXD= voix if nuance == "EXD"
+gen EXG= voix if nuance == "EXG"
+gen FN= voix if nuance == "FN"
+gen LCR= voix if nuance == "LCR"
+gen LO= voix if nuance == "LO"
+gen MNR= voix if nuance == "MNR"
+gen MPF= voix if nuance == "MPF"
+gen PREP= voix if nuance == "PREP"
+gen PRG= voix if nuance == "PRG"
+gen REG= voix if nuance == "REG"
+gen RPF= voix if nuance == "RPF"
+gen SOC= voix if nuance == "SOC"
+gen UDF= voix if nuance == "UDF"
+gen UMP= voix if nuance == "UMP"
+gen VEC= voix if nuance == "VEC"
+
+
+
+foreach x of varlist(COM-VEC) {
+bysort idbv: egen t_`x' = total(`x')
+}
+
+keep coddep codcom libcom bv bv2 ins vot com insee idbv t_COM-t_VEC
+
+duplicates drop
+
+/// Boucles bureau
+
+gen bn = vot - (t_COM + t_CPNT + t_DIV + t_DL + t_DVD + t_DVG + t_ECO + t_EXD + t_EXG  + t_FN + t_LCR + t_LO + t_MNR + t_MPF + t_PREP + t_PRG + t_REG + t_RPF + t_SOC + t_UDF + t_UMP + t_VEC )
+gen exp = vot - bn 
+
+foreach x of varlist(t_COM-t_VEC) {
+gen i_`x' = `x' / ins * 100
+}
+
+foreach x of varlist(t_COM-t_VEC) {
+gen e_`x' = `x' / exp * 100
+}
+
+/// Boucles commune
+
+foreach x of varlist(ins vot exp bn t_COM-t_VEC) {
+bysort insee : egen com_`x' = total(`x')
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen i_`x' = `x' / com_ins * 100
+}
+
+foreach x of varlist(com_t_COM-com_t_VEC) {
+gen e_`x' = `x' / com_exp * 100
+}
+
+keep coddep codcom libcom insee com_ins com_vot com_bn com_exp com_t_COM-e_com_t_VEC
+
+duplicates drop
+
+
+********************************************************************************
+*** Arrondissements
+********************************************************************************
+
+/*
+gen bvp = substr( bv, 1,2) if coddep=="75"
+
+replace insee = "75101" if bvp == "01"
+replace insee = "75102" if bvp == "02"
+replace insee = "75103" if bvp == "03"
+replace insee = "75104" if bvp == "04"
+replace insee = "75105" if bvp == "05"
+replace insee = "75106" if bvp == "06"
+replace insee = "75107" if bvp == "07"
+replace insee = "75108" if bvp == "08"
+replace insee = "75109" if bvp == "09"
+replace insee = "75110" if bvp == "10"
+replace insee = "75111" if bvp == "11"
+replace insee = "75112" if bvp == "12"
+replace insee = "75113" if bvp == "13"
+replace insee = "75114" if bvp == "14"
+replace insee = "75115" if bvp == "15"
+replace insee = "75116" if bvp == "16"
+replace insee = "75117" if bvp == "17"
+replace insee = "75118" if bvp == "18"
+replace insee = "75119" if bvp == "19"
+replace insee = "75120" if bvp == "20"
+*/
+
   </code>
   </pre>
 
