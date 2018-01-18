@@ -1,23 +1,17 @@
 body {
-    margin-left: auto;
-    margin-right:auto;
-    width: 850px;
-    background-color: #fdf6e3;
-    color: #268bd2;
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 1.2em;
 }
 
-h1 {
-font-size: 110%;
-font-weight: bold;
-font-family: sans-serif;
-}
-
+/* code */
 pre {
-    background-color: #002b36;
-    white-space: pre-wrap;
-    padding-left: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 2px #eee;
+  padding: 1em;
+  overflow-x: auto;
 }
 
-code {
-    color: #93a1a1;
-}
+code { background: #f9f9f9; }
+pre code { background: none; }
