@@ -5,6 +5,10 @@ body {
   line-height: 1.2em;
 }
 
+h1 {
+  color: blue;
+}
+
 /* code */
 pre {
   border: 1px solid #ddd;
