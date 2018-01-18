@@ -5,10 +5,10 @@ body {
 }
 
 pre {
+    background-color: #002b36;
     white-space: pre-wrap;
 }
 
 code {
-    background-color: #002b36;
     color: #93a1a1;
 }
