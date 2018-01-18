@@ -6,6 +6,12 @@ body {
     color: #268bd2;
 }
 
+h1 {
+font-size: 110%;
+font-weight: bold;
+font-family: sans-serif;
+}
+
 pre {
     background-color: #002b36;
     white-space: pre-wrap;
