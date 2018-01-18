@@ -14,7 +14,7 @@ pre {
   border: 1px solid #ddd;
   box-shadow: 2px 2px 2px #eee;
   padding: 1em;
-  overflow-x: auto;
+  white-space: pre-wrap;
 }
 
 code { background: #f9f9f9; }
