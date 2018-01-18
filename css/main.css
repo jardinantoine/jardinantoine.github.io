@@ -1,14 +1,11 @@
 body {
   max-width: 800px;
   margin: auto;
-  padding: 1em;
   line-height: 1.2em;
 }
 
-h1 {
-  display: block;
-  background-color : blue;
-  color: white;
+p {
+  color: blue;
   size: 1em;
 }
 
